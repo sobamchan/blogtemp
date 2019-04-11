@@ -6,6 +6,7 @@ import (
 	"os"
 	"strings"
 	"time"
+    "flag"
 )
 
 func check(e error) {
@@ -15,6 +16,9 @@ func check(e error) {
 }
 
 func main() {
+    forYesterdayPtr := flag.Bool("yesterday", false, "Is it for yesterday?")
+    flag.Parse()
+
 	// get title
 	reader := bufio.NewReader(os.Stdin)
 	fmt.Print("Enter title: ")
@@ -22,8 +26,14 @@ func main() {
 	title = strings.Replace(title, "\n", "", -1)
 	nonSpaceTitle := strings.Replace(title, " ", "-", -1)
 
+    now := time.Now()
 	// generate time string
-	now := time.Now().AddDate(0, 0, -1)
+    if *forYesterdayPtr {
+	    now = now.AddDate(0, 0, -1)
+    } else {
+	    now = time.Now()
+    }
+
 	nowString := fmt.Sprintf("%d-%02d-%02d", now.Year(), now.Month(), now.Day())
 
 	// generate filename
